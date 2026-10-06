@@ -42,31 +42,38 @@ class SliderController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'image' => 'required|image|max:10240', // 10MB Max
+            'image' => 'nullable|image|max:10240', // 10MB Max
+            'image_path' => 'nullable|string',
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string|max:255',
         ]);
 
+        $imagePath = null;
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('sliders', 'public');
-            
-            $maxOrder = SliderImage::max('order') ?? 0;
-            
-            $sliderImage = SliderImage::create([
-                'image_path' => url('/storage/' . $path),
-                'title' => $request->title,
-                'subtitle' => $request->subtitle,
-                'order' => $maxOrder + 1,
-                'is_active' => true,
-            ]);
-
-            return response()->json([
-                'message' => 'Image uploaded successfully',
-                'image' => $sliderImage
-            ], 201);
+            $imagePath = url('/storage/' . $path);
+        } elseif ($request->filled('image_path')) {
+            $imagePath = $request->image_path;
         }
 
-        return response()->json(['message' => 'No image uploaded'], 400);
+        if (!$imagePath) {
+            return response()->json(['message' => 'Please provide an image'], 422);
+        }
+
+        $maxOrder = SliderImage::max('order') ?? 0;
+        
+        $sliderImage = SliderImage::create([
+            'image_path' => $imagePath,
+            'title' => $request->title,
+            'subtitle' => $request->subtitle,
+            'order' => $maxOrder + 1,
+            'is_active' => true,
+        ]);
+
+        return response()->json([
+            'message' => 'Image uploaded successfully',
+            'image' => $sliderImage
+        ], 201);
     }
 
     /**
