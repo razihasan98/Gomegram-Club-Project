@@ -17,14 +17,16 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
 
-        // Ensure Authorization Header is never lost on Apache/Proxies
+        // Ensure Authorization Header is never lost on Apache, Vercel proxy, or Cloudflare
         $middleware->prepend(function (Request $request, $next) {
-            $token = $request->header('X-Admin-Token') 
-                  ?: $request->header('X-Authorization') 
-                  ?: $request->server('HTTP_AUTHORIZATION') 
+            $token = $request->header('X-Api-Token')
+                  ?: $request->header('X-Admin-Token')
+                  ?: $request->query('api_token')
+                  ?: $request->header('X-Authorization')
+                  ?: $request->server('HTTP_AUTHORIZATION')
                   ?: $request->server('REDIRECT_HTTP_AUTHORIZATION');
 
-            if ($token && !$request->headers->has('Authorization')) {
+            if ($token) {
                 if (!str_starts_with($token, 'Bearer ')) {
                     $token = 'Bearer ' . $token;
                 }
