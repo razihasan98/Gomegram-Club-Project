@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "http://gomegram-club.rf.gd/api/:path*"
+      "destination": "https://gomegram-club-project.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
