@@ -13,6 +13,8 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('swapnosiri_admin_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    config.headers['X-Admin-Token'] = token;
+    config.headers['X-Authorization'] = `Bearer ${token}`;
   }
   return config;
 }, (error) => {
