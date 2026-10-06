@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A192F;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="46" fill="url(#grad)" />
+  <circle cx="50" cy="50" r="40" fill="#0A192F" />
+  <!-- Flame/Ladder symbol -->
+  <path d="M50 20 L57 38 L50 34 L43 38 Z" fill="#F59E0B" />
+  <path d="M40 42 L60 42 M38 52 L62 52 M36 62 L64 62 M34 72 L66 72" stroke="#10B981" stroke-width="4" stroke-linecap="round" />
+  <line x1="40" y1="38" x2="34" y2="76" stroke="#F59E0B" stroke-width="4" stroke-linecap="round" />
+  <line x1="60" y1="38" x2="66" y2="76" stroke="#F59E0B" stroke-width="4" stroke-linecap="round" />
+</svg>
