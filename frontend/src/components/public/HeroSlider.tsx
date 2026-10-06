@@ -82,24 +82,33 @@ export const HeroSlider: React.FC = () => {
     const currentSlide = displayImages[currentIndex] || displayImages[0];
 
     return (
-        <div className="relative w-full h-[320px] sm:h-[440px] md:h-[540px] lg:h-[620px] xl:h-[700px] 2xl:h-[760px] overflow-hidden bg-slate-950">
+        <div className="relative w-full h-[320px] sm:h-[420px] md:h-[500px] lg:h-[580px] xl:h-[640px] overflow-hidden bg-black flex items-center justify-center">
             <AnimatePresence initial={false}>
                 <motion.div
                     key={currentIndex}
-                    className="absolute inset-0 w-full h-full"
+                    className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden"
                     initial={{ opacity: isFirstRender.current ? 1 : 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 1, ease: "easeInOut" }}
                 >
+                    {/* Ambient Blurred Background to elegantly fill wide screens */}
+                    <img
+                        src={getImageUrl(currentSlide?.image_path)}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-35 select-none pointer-events-none"
+                    />
+
+                    {/* Full Photo - 100% visible, zero cropping */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="absolute inset-0 w-full h-full object-cover object-[center_top] select-none"
+                        className="relative z-10 w-full h-full object-contain object-center select-none"
                         fetchPriority="high"
                         loading="eager"
                     />
-                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-4 md:pb-8 gap-2">
+                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-black/15 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-4 md:pb-6 gap-2">
                         {currentSlide?.title && (
                             <motion.div 
                                 initial="hidden"
