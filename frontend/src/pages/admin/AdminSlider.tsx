@@ -33,8 +33,7 @@ const AdminSlider = () => {
     const getImageUrl = (path: string) => {
         if (!path) return '';
         if (path.startsWith('http')) return path;
-        const backendUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : '';
-        return `${backendUrl}${path}`;
+        return path;
     };
 
     useEffect(() => {

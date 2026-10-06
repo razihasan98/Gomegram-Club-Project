@@ -5,6 +5,10 @@
       "destination": "https://gomegram-club-project.onrender.com/api/:path*"
     },
     {
+      "source": "/storage/:path*",
+      "destination": "https://gomegram-club-project.onrender.com/storage/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
