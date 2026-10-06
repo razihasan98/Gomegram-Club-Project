@@ -64,7 +64,6 @@ class UploadController extends Controller
 
             // Google Drive Backup
             $shouldBackup = filter_var($request->input('backup_to_drive', false), FILTER_VALIDATE_BOOLEAN);
-            \Illuminate\Support\Facades\Log::info("Backup to Drive Requested: " . ($shouldBackup ? 'YES' : 'NO'));
 
             if ($shouldBackup) {
                 try {
@@ -73,22 +72,13 @@ class UploadController extends Controller
                     
                     if (file_exists($localSavedPath)) {
                         $fileStream = fopen($localSavedPath, 'r');
-                        \Illuminate\Support\Facades\Log::info("Uploading to Google Drive: {$googlePath}");
                         $success = \Illuminate\Support\Facades\Storage::disk('google')->put($googlePath, $fileStream);
                         if (is_resource($fileStream)) {
                             fclose($fileStream);
                         }
-                        
-                        if ($success) {
-                            \Illuminate\Support\Facades\Log::info("Google Drive Upload Successful!");
-                        } else {
-                            \Illuminate\Support\Facades\Log::error("Google Drive Upload Returned False.");
-                        }
-                    } else {
-                        \Illuminate\Support\Facades\Log::error("Cannot backup to Drive, local file not found: {$localSavedPath}");
                     }
                 } catch (\Exception $driveEx) {
-                    \Illuminate\Support\Facades\Log::error('Google Drive Upload Exception: ' . $driveEx->getMessage());
+                    // Ignore drive backup errors gracefully
                 }
             }
 
