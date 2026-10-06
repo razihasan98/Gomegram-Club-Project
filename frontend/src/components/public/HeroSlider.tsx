@@ -29,29 +29,31 @@ export const HeroSlider: React.FC = () => {
     });
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    const getImageUrl = (path: string) => {
-        if (path === 'local_hero') return HeroImage;
-        if (!path) return '';
+    const getImageUrl = (path?: string) => {
+        if (!path || path === 'local_hero') return HeroImage;
         if (path.startsWith('http')) return path;
-        const backendUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : '';
-        return `${backendUrl}${path}`;
+        return path;
     };
 
     useEffect(() => {
         const fetchSliderData = async () => {
             try {
                 const [sliderRes, settingsRes] = await Promise.all([
-                    api.get('/slider'),
-                    api.get('/settings')
+                    api.get('/slider').catch(() => ({ data: { images: [] } })),
+                    api.get('/settings').catch(() => ({ data: { settings: {} } }))
                 ]);
                 
-                setImages(sliderRes.data.images);
-                localStorage.setItem('slider_images', JSON.stringify(sliderRes.data.images));
+                if (sliderRes?.data?.images && Array.isArray(sliderRes.data.images)) {
+                    setImages(sliderRes.data.images);
+                    localStorage.setItem('slider_images', JSON.stringify(sliderRes.data.images));
+                }
                 
-                if (settingsRes.data.settings.slider_interval) {
+                if (settingsRes?.data?.settings?.slider_interval) {
                     const interval = parseInt(settingsRes.data.settings.slider_interval);
-                    setIntervalSec(interval);
-                    localStorage.setItem('slider_interval', interval.toString());
+                    if (!isNaN(interval) && interval > 0) {
+                        setIntervalSec(interval);
+                        localStorage.setItem('slider_interval', interval.toString());
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch slider data", error);
@@ -62,10 +64,12 @@ export const HeroSlider: React.FC = () => {
     }, []);
 
     const isFirstRender = useRef(true);
-    const displayImages = images.length > 0 ? images : [{ id: -1, image_path: 'local_hero' }];
+    const displayImages: SliderImage[] = (images && Array.isArray(images) && images.length > 0) 
+        ? images 
+        : [{ id: -1, image_path: 'local_hero', title: '', subtitle: '' }];
 
     useEffect(() => {
-        if (displayImages.length === 0) return;
+        if (!displayImages || displayImages.length === 0) return;
 
         const timer = setInterval(() => {
             isFirstRender.current = false;
@@ -75,9 +79,10 @@ export const HeroSlider: React.FC = () => {
         return () => clearInterval(timer);
     }, [displayImages.length, intervalSec]);
 
-    return (
-      <div className="relative w-full aspect-video md:aspect-[21/9] lg:h-[650px] overflow-hidden bg-slate-900">
+    const currentSlide = displayImages[currentIndex] || displayImages[0];
 
+    return (
+        <div className="relative w-full aspect-video md:aspect-[21/9] lg:h-[650px] overflow-hidden bg-slate-900">
             <AnimatePresence initial={false}>
                 <motion.div
                     key={currentIndex}
@@ -88,14 +93,14 @@ export const HeroSlider: React.FC = () => {
                     transition={{ duration: 1, ease: "easeInOut" }}
                 >
                     <img
-                        src={getImageUrl(displayImages[currentIndex]?.image_path)}
+                        src={getImageUrl(currentSlide?.image_path)}
                         alt="Club Activity"
                         className="absolute inset-0 w-full h-full object-cover object-center"
                         fetchPriority="high"
                         loading="eager"
                     />
                     <div className="absolute inset-0 z-20 bg-black/30 flex flex-col items-center justify-end pointer-events-none p-4 pb-4 md:pb-8 gap-2">
-                        {displayImages[currentIndex]?.title && (
+                        {currentSlide?.title && (
                             <motion.div 
                                 initial="hidden"
                                 animate="show"
@@ -108,7 +113,7 @@ export const HeroSlider: React.FC = () => {
                                 }}
                                 className="font-semibold text-xl sm:text-2xl md:text-3xl tracking-wider text-white/95 text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
                             >
-                                {Array.from(displayImages[currentIndex].title).map((char, index) => (
+                                {Array.from(currentSlide.title).map((char, index) => (
                                     <motion.span
                                         key={index}
                                         variants={{
@@ -127,7 +132,7 @@ export const HeroSlider: React.FC = () => {
                                 ))}
                             </motion.div>
                         )}
-                        {displayImages[currentIndex]?.subtitle && (
+                        {currentSlide?.subtitle && (
                             <motion.div 
                                 initial="hidden"
                                 animate="show"
@@ -140,7 +145,7 @@ export const HeroSlider: React.FC = () => {
                                 }}
                                 className="font-medium text-base sm:text-lg md:text-xl tracking-wide text-white text-center drop-shadow-md"
                             >
-                                {Array.from(displayImages[currentIndex].subtitle).map((char, index) => (
+                                {Array.from(currentSlide.subtitle).map((char, index) => (
                                     <motion.span
                                         key={index}
                                         variants={{
