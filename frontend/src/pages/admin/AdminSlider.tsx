@@ -20,6 +20,7 @@ const AdminSlider = () => {
 
     // Upload state
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [uploadTitle, setUploadTitle] = useState('');
     const [uploadSubtitle, setUploadSubtitle] = useState('');
 
@@ -60,6 +61,13 @@ const AdminSlider = () => {
         const file = e.target.files?.[0];
         if (file) {
             setSelectedFile(file);
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (event.target?.result) {
+                    setPreviewUrl(event.target.result as string);
+                }
+            };
+            reader.readAsDataURL(file);
             setUploadTitle('');
             setUploadSubtitle('');
         }
@@ -81,6 +89,7 @@ const AdminSlider = () => {
             });
             setImages([...images, response.data.image]);
             setSelectedFile(null);
+            setPreviewUrl(null);
             setUploadTitle('');
             setUploadSubtitle('');
         } catch (error) {
@@ -220,7 +229,7 @@ const AdminSlider = () => {
                 </div>
             </div>
 
-            {selectedFile && (
+            {selectedFile && previewUrl && (
                 <div className="rounded-3xl bg-white dark:bg-black border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm p-6">
                     <h3 className="font-heading font-bold text-lg text-gray-900 dark:text-[#F7F7FB] mb-4">
                         Upload New Image
@@ -228,7 +237,7 @@ const AdminSlider = () => {
                     <div className="flex flex-col md:flex-row gap-6">
                         <div className="w-full md:w-1/3">
                             <div className="aspect-video bg-gray-100 dark:bg-gray-900 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800">
-                                <img src={URL.createObjectURL(selectedFile)} alt="Preview" className="w-full h-full object-cover" />
+                                <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                             </div>
                         </div>
                         <div className="flex-1 space-y-4">
@@ -259,7 +268,7 @@ const AdminSlider = () => {
                                     {uploading ? 'Uploading...' : 'Confirm Upload'}
                                 </button>
                                 <button
-                                    onClick={() => setSelectedFile(null)}
+                                    onClick={() => { setSelectedFile(null); setPreviewUrl(null); }}
                                     disabled={uploading}
                                     className="px-4 py-2 rounded-xl text-sm font-semibold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
                                 >
