@@ -82,7 +82,7 @@ export const HeroSlider: React.FC = () => {
     const currentSlide = displayImages[currentIndex] || displayImages[0];
 
     return (
-        <div className="relative w-full aspect-video md:aspect-[21/9] lg:h-[650px] overflow-hidden bg-slate-900">
+        <div className="relative w-full h-[320px] sm:h-[440px] md:h-[540px] lg:h-[620px] xl:h-[700px] 2xl:h-[760px] overflow-hidden bg-slate-950">
             <AnimatePresence initial={false}>
                 <motion.div
                     key={currentIndex}
@@ -94,12 +94,12 @@ export const HeroSlider: React.FC = () => {
                 >
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
-                        alt="Club Activity"
-                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        alt={currentSlide?.title || "Club Activity"}
+                        className="absolute inset-0 w-full h-full object-cover object-[center_top] select-none"
                         fetchPriority="high"
                         loading="eager"
                     />
-                    <div className="absolute inset-0 z-20 bg-black/30 flex flex-col items-center justify-end pointer-events-none p-4 pb-4 md:pb-8 gap-2">
+                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-4 md:pb-8 gap-2">
                         {currentSlide?.title && (
                             <motion.div 
                                 initial="hidden"
