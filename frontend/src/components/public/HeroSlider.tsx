@@ -12,12 +12,20 @@ interface SliderImage {
 
 export const HeroSlider: React.FC = () => {
     const [images, setImages] = useState<SliderImage[]>(() => {
-        const cached = localStorage.getItem('slider_images');
-        return cached ? JSON.parse(cached) : [];
+        try {
+            const cached = localStorage.getItem('slider_images');
+            return cached && cached !== 'undefined' ? JSON.parse(cached) : [];
+        } catch {
+            return [];
+        }
     });
     const [intervalSec, setIntervalSec] = useState<number>(() => {
-        const cached = localStorage.getItem('slider_interval');
-        return cached ? parseInt(cached) : 5;
+        try {
+            const cached = localStorage.getItem('slider_interval');
+            return cached ? parseInt(cached) : 5;
+        } catch {
+            return 5;
+        }
     });
     const [currentIndex, setCurrentIndex] = useState(0);
 
