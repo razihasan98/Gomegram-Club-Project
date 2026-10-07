@@ -5,7 +5,8 @@ import {
   Save,
   Sparkles,
   Lock,
-  Mail
+  Mail,
+  Cloud
 } from 'lucide-react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -37,6 +38,10 @@ export const AdminSettings: React.FC = () => {
     hide_public_email: '0',
     hide_public_address: '0',
     hide_public_financials: '0',
+    cloudinary_cloud_name: '',
+    cloudinary_api_key: '',
+    cloudinary_api_secret: '',
+    cloudinary_upload_preset: '',
   });
 
   const [accountForm, setAccountForm] = useState({
@@ -364,6 +369,94 @@ export const AdminSettings: React.FC = () => {
           </button>
         </div>
       </form>
+
+      {/* Cloudinary Cloud Storage (Permanent CDN Storage) */}
+      <div className="p-8 rounded-3xl bg-white dark:bg-black border border-gray-200 dark:border-gray-800 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
+          <div className="flex items-center gap-2">
+            <Cloud className="w-5 h-5 text-indigo-500" />
+            <div>
+              <h3 className="font-heading font-bold text-lg text-gray-900 dark:text-[#F7F7FB]">Cloudinary Cloud Storage (Permanent Image CDN)</h3>
+              <p className="text-xs text-gray-500 dark:text-[#9CA6C1]">
+                Store all photos permanently in the cloud. Photos will never disappear on server restarts or redeployments.
+              </p>
+            </div>
+          </div>
+          {settingsForm.cloudinary_cloud_name && (
+            <span className="px-3 py-1 text-[11px] font-semibold rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              Cloudinary Configured
+            </span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 dark:text-[#C5CCE0] mb-1">
+              Cloudinary Cloud Name *
+            </label>
+            <input
+              type="text"
+              value={settingsForm.cloudinary_cloud_name || ''}
+              onChange={(e) => setSettingsForm({ ...settingsForm, cloudinary_cloud_name: e.target.value })}
+              placeholder="e.g. dxyz1234"
+              className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-black border border-gray-200 dark:border-gray-800 text-xs text-gray-900 dark:text-[#F7F7FB] focus:outline-none focus:border-[#7C3AED]"
+            />
+            <p className="text-[10px] text-gray-500 mt-1">Found on your Cloudinary dashboard.</p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 dark:text-[#C5CCE0] mb-1">
+              Upload Preset (Recommended for Unsigned Upload)
+            </label>
+            <input
+              type="text"
+              value={settingsForm.cloudinary_upload_preset || ''}
+              onChange={(e) => setSettingsForm({ ...settingsForm, cloudinary_upload_preset: e.target.value })}
+              placeholder="e.g. gomegram_preset"
+              className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-black border border-gray-200 dark:border-gray-800 text-xs text-gray-900 dark:text-[#F7F7FB] focus:outline-none focus:border-[#7C3AED]"
+            />
+            <p className="text-[10px] text-gray-500 mt-1">From Cloudinary Settings &gt; Upload &gt; Upload Presets.</p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 dark:text-[#C5CCE0] mb-1">
+              API Key (Optional / For Signed Uploads)
+            </label>
+            <input
+              type="text"
+              value={settingsForm.cloudinary_api_key || ''}
+              onChange={(e) => setSettingsForm({ ...settingsForm, cloudinary_api_key: e.target.value })}
+              placeholder="e.g. 123456789012345"
+              className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-black border border-gray-200 dark:border-gray-800 text-xs text-gray-900 dark:text-[#F7F7FB] focus:outline-none focus:border-[#7C3AED]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 dark:text-[#C5CCE0] mb-1">
+              API Secret (Optional / For Signed Uploads)
+            </label>
+            <input
+              type="password"
+              value={settingsForm.cloudinary_api_secret || ''}
+              onChange={(e) => setSettingsForm({ ...settingsForm, cloudinary_api_secret: e.target.value })}
+              placeholder="e.g. abcd_123456789"
+              className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-black border border-gray-200 dark:border-gray-800 text-xs text-gray-900 dark:text-[#F7F7FB] focus:outline-none focus:border-[#7C3AED]"
+            />
+          </div>
+        </div>
+
+        <div className="pt-2 flex justify-end">
+          <button
+            type="button"
+            onClick={handleSaveSettings}
+            disabled={savingSettings}
+            className="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-lg shadow-indigo-600/25 flex items-center gap-2"
+          >
+            <Save className="w-4 h-4" />
+            <span>{savingSettings ? 'Saving...' : 'Save Cloudinary Config'}</span>
+          </button>
+        </div>
+      </div>
 
       {/* Google Drive Configuration */}
       <form onSubmit={handleSaveGdrive} className="p-8 rounded-3xl bg-white dark:bg-black border border-gray-200 dark:border-gray-800 space-y-4 shadow-xl">

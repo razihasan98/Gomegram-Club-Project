@@ -92,17 +92,34 @@ export const HeroSlider: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.7, ease: "easeInOut" }}
                 >
-                    {/* Full Edge-to-Edge Hero Image */}
+                    {/* Ambient Blurred Background - Fills all widescreen edges with rich matching colors */}
+                    <img
+                        src={getImageUrl(currentSlide?.image_path)}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover blur-3xl scale-125 opacity-60 brightness-75 select-none pointer-events-none"
+                    />
+
+                    {/* Dark gradient overlay */}
+                    <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+
+                    {/* Sharp Main Image - 100% Full View, NEVER cropped on any device (PC, Tab, Mobile) */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="w-full h-full object-cover object-center select-none"
+                        className="relative z-10 max-h-full max-w-full w-auto h-auto object-contain mx-auto select-none drop-shadow-[0_12px_40px_rgba(0,0,0,0.75)]"
                         fetchPriority="high"
                         loading="eager"
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (target.src !== HeroImage) {
+                                target.src = HeroImage;
+                            }
+                        }}
                     />
 
-                    {/* Subtle vignette & Bottom title gradient */}
-                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/25 to-black/10 flex flex-col items-center justify-end pointer-events-none p-4 pb-6 sm:pb-8 md:pb-10 gap-1.5 sm:gap-2">
+                    {/* Subtle bottom vignette & title gradient */}
+                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-6 sm:pb-8 md:pb-10 gap-1.5 sm:gap-2">
                         {currentSlide?.title && (
                             <motion.div 
                                 initial="hidden"

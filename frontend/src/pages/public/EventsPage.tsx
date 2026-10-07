@@ -111,6 +111,16 @@ export const EventsPage: React.FC = () => {
                     <img
                       src={evt.banner_image}
                       alt={evt.title}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                        const parent = (e.target as HTMLImageElement).parentElement;
+                        if (parent && !parent.querySelector('.fallback-banner')) {
+                          const fallback = document.createElement('div');
+                          fallback.className = 'fallback-banner w-full h-full bg-gradient-to-br from-emerald-500/20 to-emerald-900/40 flex items-center justify-center p-4';
+                          fallback.innerHTML = `<span class="text-2xl font-extrabold text-emerald-400 opacity-70 uppercase tracking-wider text-center break-words">${evt.title || 'Event'}</span>`;
+                          parent.appendChild(fallback);
+                        }
+                      }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   ) : (
