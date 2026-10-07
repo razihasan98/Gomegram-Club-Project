@@ -82,7 +82,7 @@ export const HeroSlider: React.FC = () => {
     const currentSlide = displayImages[currentIndex] || displayImages[0];
 
     return (
-        <div className="relative w-full overflow-hidden bg-slate-950 h-[300px] sm:h-[400px] md:h-[480px] lg:h-[560px]">
+        <div className="relative w-full overflow-hidden bg-slate-950 aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[80vh] min-h-[300px]">
             <AnimatePresence initial={false}>
                 <motion.div
                     key={currentIndex}
@@ -92,11 +92,11 @@ export const HeroSlider: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.7, ease: "easeInOut" }}
                 >
-                    {/* Full Complete Uploaded Image - object-fit: contain to guarantee 0% cropping */}
+                    {/* Full-width Edge-to-Edge Image with Natural 16:9 Aspect Ratio - Zero Side Gaps & Fully Visible */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="w-full h-full object-contain select-none mx-auto"
+                        className="w-full h-full object-cover object-center select-none"
                         fetchPriority="high"
                         loading="eager"
                         onError={(e) => {
