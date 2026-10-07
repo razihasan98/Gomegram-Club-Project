@@ -92,11 +92,11 @@ export const HeroSlider: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.7, ease: "easeInOut" }}
                 >
-                    {/* Full-width Edge-to-Edge Image with Top-Aligned Framing (No side gaps & heads/faces fully visible) */}
+                    {/* Full Complete Uploaded Image - object-fit: contain to guarantee 0% cropping */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="w-full h-full object-cover object-top select-none"
+                        className="w-full h-full object-contain select-none mx-auto"
                         fetchPriority="high"
                         loading="eager"
                         onError={(e) => {
