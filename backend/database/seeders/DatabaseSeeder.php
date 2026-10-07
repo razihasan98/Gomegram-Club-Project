@@ -23,16 +23,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Seed Initial Admin Users (Only if not already created)
-        User::firstOrCreate(
-            ['email' => 'admin@swapnosiri.org'],
-            [
-                'name' => 'Club Super Admin',
-                'password' => Hash::make('admin123'),
-                'role' => 'super_admin',
-            ]
-        );
-
+        // 1. Ensure Emon Admin is the sole Super Admin
         User::firstOrCreate(
             ['email' => 'emon@gmail.com'],
             [
@@ -41,6 +32,9 @@ class DatabaseSeeder extends Seeder
                 'role' => 'super_admin',
             ]
         );
+
+        // Permanently clean up default demo admin
+        User::where('email', 'admin@swapnosiri.org')->delete();
 
         // 2. Seed Default Club Settings (Only if not already set)
         $settings = [
