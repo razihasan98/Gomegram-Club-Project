@@ -114,7 +114,12 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
- 
+        {/* Copyright Notice */}
+        <div className="pt-8 text-center">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">
+            © 2026 Gomegram Swapnosiri Tarun Sangha | All rights reserved
+          </p>
+        </div>
       </div>
     </footer>
   );
