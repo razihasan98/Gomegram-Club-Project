@@ -82,7 +82,7 @@ export const HeroSlider: React.FC = () => {
     const currentSlide = displayImages[currentIndex] || displayImages[0];
 
     return (
-        <div className="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden bg-slate-900/60 shadow-2xl border border-slate-800/60 flex items-center justify-center">
+        <div className="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-slate-800/40 flex items-center justify-center">
             <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                     key={currentIndex}
@@ -92,22 +92,19 @@ export const HeroSlider: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
                 >
-                    {/* Ambient Background - Fills left and right side gaps with matching vibrant photo colors */}
+                    {/* Full Bright Photo Background - Completely fills left & right sides with real image colors (No Black Bars) */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt=""
                         aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover blur-3xl scale-125 opacity-65 brightness-75 select-none pointer-events-none"
+                        className="absolute inset-0 w-full h-full object-cover blur-2xl scale-115 opacity-90 brightness-95 select-none pointer-events-none"
                     />
-
-                    {/* Dark gradient overlay for smooth visual blending */}
-                    <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
                     {/* 100% Full Uncropped Sharp Main Image */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="relative z-10 w-full h-auto max-h-[85vh] min-h-[240px] sm:min-h-[320px] object-contain block select-none mx-auto drop-shadow-[0_12px_40px_rgba(0,0,0,0.8)]"
+                        className="relative z-10 w-full h-auto max-h-[85vh] min-h-[240px] sm:min-h-[320px] object-contain block select-none mx-auto drop-shadow-[0_12px_40px_rgba(0,0,0,0.7)]"
                         fetchPriority="high"
                         loading="eager"
                         onError={(e) => {
@@ -118,39 +115,75 @@ export const HeroSlider: React.FC = () => {
                         }}
                     />
 
-                    {/* Title overlay positioned at bottom */}
-                    {currentSlide?.title && (
-                        <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-4 sm:pb-6 md:pb-8">
-                            <h3 className="font-semibold text-lg sm:text-2xl md:text-3xl text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] max-w-4xl px-4">
-                                {currentSlide.title}
-                            </h3>
-                            {currentSlide?.subtitle && (
-                                <p className="font-medium text-sm sm:text-base md:text-lg text-white/90 text-center drop-shadow-md mt-1">
-                                    {currentSlide.subtitle}
-                                </p>
-                            )}
-                        </div>
-                    )}
+                    {/* Title overlay with letter-by-letter animation */}
+                    <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-5 sm:pb-7 md:pb-9 gap-1 sm:gap-1.5">
+                        {currentSlide?.title && (
+                            <motion.div 
+                                initial="hidden"
+                                animate="show"
+                                variants={{
+                                    hidden: { opacity: 0 },
+                                    show: {
+                                        opacity: 1,
+                                        transition: { staggerChildren: 0.035, delayChildren: 0.15 }
+                                    }
+                                }}
+                                className="font-semibold text-lg sm:text-2xl md:text-3xl tracking-wider text-white text-center drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] max-w-4xl px-4"
+                            >
+                                {Array.from(currentSlide.title).map((char, index) => (
+                                    <motion.span
+                                        key={index}
+                                        variants={{
+                                            hidden: { opacity: 0, y: 15, filter: 'blur(6px)' },
+                                            show: { 
+                                                opacity: 1, 
+                                                y: 0, 
+                                                filter: 'blur(0px)',
+                                                transition: { duration: 0.5, ease: [0.2, 0.65, 0.3, 0.9] } 
+                                            }
+                                        }}
+                                        className="inline-block"
+                                    >
+                                        {char === ' ' ? '\u00A0' : char}
+                                    </motion.span>
+                                ))}
+                            </motion.div>
+                        )}
+                        {currentSlide?.subtitle && (
+                            <motion.div 
+                                initial="hidden"
+                                animate="show"
+                                variants={{
+                                    hidden: { opacity: 0 },
+                                    show: {
+                                        opacity: 1,
+                                        transition: { staggerChildren: 0.025, delayChildren: 0.6 }
+                                    }
+                                }}
+                                className="font-medium text-sm sm:text-base md:text-lg text-white/95 text-center drop-shadow-md"
+                            >
+                                {Array.from(currentSlide.subtitle).map((char, index) => (
+                                    <motion.span
+                                        key={index}
+                                        variants={{
+                                            hidden: { opacity: 0, y: 12, filter: 'blur(4px)' },
+                                            show: { 
+                                                opacity: 1, 
+                                                y: 0, 
+                                                filter: 'blur(0px)',
+                                                transition: { duration: 0.4, ease: [0.2, 0.65, 0.3, 0.9] } 
+                                            }
+                                        }}
+                                        className="inline-block"
+                                    >
+                                        {char === ' ' ? '\u00A0' : char}
+                                    </motion.span>
+                                ))}
+                            </motion.div>
+                        )}
+                    </div>
                 </motion.div>
             </AnimatePresence>
-
-            {/* Slide Indicators */}
-            {displayImages.length > 1 && (
-                <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm">
-                    {displayImages.map((_, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => setCurrentIndex(idx)}
-                            className={`transition-all duration-300 rounded-full h-2 ${
-                                currentIndex === idx 
-                                    ? 'w-6 bg-indigo-500 shadow-sm' 
-                                    : 'w-2 bg-white/50 hover:bg-white/80'
-                            }`}
-                            aria-label={`Slide ${idx + 1}`}
-                        />
-                    ))}
-                </div>
-            )}
         </div>
     );
 };
