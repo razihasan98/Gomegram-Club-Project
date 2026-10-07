@@ -43,7 +43,7 @@ class MemberController extends Controller
             $eventId = $latestEvent ? $latestEvent->id : null;
         }
 
-        $members = $query->orderByRaw('CAST(member_id AS INTEGER) ASC, id ASC')->get();
+        $members = $query->orderByRaw('CAST(member_id AS UNSIGNED) ASC, id ASC')->get();
 
         // Attach financials and apply privacy settings
         $globalHidePhone = ClubSetting::get('hide_public_phone', '0') === '1';
@@ -172,7 +172,7 @@ class MemberController extends Controller
             $eventId = $latestEvent ? $latestEvent->id : null;
         }
 
-        $members = $query->orderByRaw('CAST(member_id AS INTEGER) ASC, id ASC')->get();
+        $members = $query->orderByRaw('CAST(member_id AS UNSIGNED) ASC, id ASC')->get();
 
         $data = $members->map(function ($member) use ($eventId) {
             $financials = $member->getFinancials($eventId);

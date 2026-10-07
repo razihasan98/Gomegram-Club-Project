@@ -27,7 +27,7 @@ class ReportController extends Controller
             $query->where('membership_type', $membershipType);
         }
 
-        $members = $query->orderByRaw('CAST(member_id AS INTEGER) ASC, id ASC')->get();
+        $members = $query->orderByRaw('CAST(member_id AS UNSIGNED) ASC, id ASC')->get();
 
         $selectedEvent = null;
         if ($eventId && $eventId !== 'All') {
@@ -93,7 +93,7 @@ class ReportController extends Controller
     public function getDueReport(Request $request): JsonResponse
     {
         $eventId = $request->get('event_id');
-        $members = Member::where('status', 'Active')->orderByRaw('CAST(member_id AS INTEGER) ASC, id ASC')->get();
+        $members = Member::where('status', 'Active')->orderByRaw('CAST(member_id AS UNSIGNED) ASC, id ASC')->get();
 
         $selectedEvent = $eventId ? Event::find($eventId) : Event::orderBy('event_date', 'desc')->first();
         $targetEventId = $selectedEvent ? $selectedEvent->id : null;
@@ -136,7 +136,7 @@ class ReportController extends Controller
     {
         $event = Event::with(['memberFees.member', 'payments.member'])->findOrFail($eventId);
 
-        $memberBreakdown = Member::where('status', 'Active')->orderByRaw('CAST(member_id AS INTEGER) ASC, id ASC')->get()->map(function ($member) use ($event) {
+        $memberBreakdown = Member::where('status', 'Active')->orderByRaw('CAST(member_id AS UNSIGNED) ASC, id ASC')->get()->map(function ($member) use ($event) {
             $payments = PaymentTransaction::where('event_id', $event->id)->where('member_id', $member->id)->get();
             $fin = $member->getFinancials($event->id);
 
