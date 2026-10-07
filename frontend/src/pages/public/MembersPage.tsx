@@ -386,41 +386,15 @@ export const MembersPage: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white dark:bg-black/85 dark:bg-black/85 backdrop-blur-md overflow-y-auto">
           <div className="relative w-full max-w-2xl bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-3xl shadow-2xl overflow-hidden my-8 print-container">
             {/* Modal Header */}
-            <div className="p-4 sm:p-6 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 flex items-center justify-between no-print gap-2">
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    setSelectedMember(null);
-                    setMemberStatement(null);
-                  }}
-                  className="px-3.5 py-2 rounded-xl bg-gray-100 dark:bg-[#1A2140] hover:bg-gray-200 dark:hover:bg-[#252D4A] text-gray-700 dark:text-[#C5CCE0] hover:text-gray-900 dark:hover:text-white border border-gray-200 dark:border-gray-800 dark:hover:border-[#3D4770] text-xs font-bold flex items-center gap-1.5 transition-all shadow-md group"
-                  title="Back to Members & Dues"
-                >
-                  <ArrowLeft className="w-4 h-4 text-[#7C3AED] group-hover:-translate-x-1 transition-transform" />
-                  <span>Back</span>
-                </button>
-
-                <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/15 flex items-center justify-center text-amber-700 dark:text-[#D4AF37] font-bold font-mono">
-                  {selectedMember.member_id || selectedMember.id}
-                </div>
-                <div>
-                  <h3 className="font-heading font-bold text-base sm:text-lg text-gray-900 dark:text-[#F7F7FB]">{selectedMember.name}</h3>
-                  <p className="text-xs text-gray-500 dark:text-[#9CA6C1]">
-                    {selectedMember.position || selectedMember.membership_type}
-                  </p>
-                </div>
+            <div className="p-4 sm:p-6 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-800 flex items-center justify-start no-print gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#7C3AED]/15 flex items-center justify-center text-amber-700 dark:text-[#D4AF37] font-bold font-mono">
+                {selectedMember.member_id || selectedMember.id}
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    setSelectedMember(null);
-                    setMemberStatement(null);
-                  }}
-                  className="p-1.5 rounded-lg bg-gray-100 dark:bg-[#1A2140] hover:bg-gray-200 dark:hover:bg-[#252D4A] text-gray-500 dark:text-[#9CA6C1] hover:text-gray-900 dark:hover:text-[#F7F7FB] dark:text-[#F7F7FB] transition-colors"
-                  title="Close"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+              <div>
+                <h3 className="font-heading font-bold text-base sm:text-lg text-gray-900 dark:text-[#F7F7FB]">{selectedMember.name}</h3>
+                <p className="text-xs text-gray-500 dark:text-[#9CA6C1]">
+                  {selectedMember.position || selectedMember.membership_type}
+                </p>
               </div>
             </div>
 
