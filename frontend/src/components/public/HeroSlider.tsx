@@ -82,21 +82,21 @@ export const HeroSlider: React.FC = () => {
     const currentSlide = displayImages[currentIndex] || displayImages[0];
 
     return (
-        <div className="relative w-full overflow-hidden bg-slate-950 aspect-[4/3] sm:aspect-[16/10] md:aspect-[16/9] max-h-[80vh] min-h-[300px]">
-            <AnimatePresence initial={false}>
+        <div className="relative w-full bg-slate-950 overflow-hidden flex items-center justify-center">
+            <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                     key={currentIndex}
-                    className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden"
+                    className="w-full flex items-center justify-center relative"
                     initial={{ opacity: isFirstRender.current ? 1 : 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.7, ease: "easeInOut" }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
                 >
-                    {/* Full-width Edge-to-Edge Image with Natural 16:9 Aspect Ratio - Zero Side Gaps & Fully Visible */}
+                    {/* Natural Ratio, 100% Uncropped Image from Top, Bottom, Left, and Right on All Devices */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="w-full h-full object-cover object-center select-none"
+                        className="w-full h-auto max-h-[85vh] min-h-[240px] sm:min-h-[320px] object-contain block select-none mx-auto"
                         fetchPriority="high"
                         loading="eager"
                         onError={(e) => {
@@ -107,79 +107,25 @@ export const HeroSlider: React.FC = () => {
                         }}
                     />
 
-                    {/* Subtle bottom gradient for title clarity */}
-                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/15 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-6 sm:pb-8 md:pb-10 gap-1.5 sm:gap-2">
-                        {currentSlide?.title && (
-                            <motion.div 
-                                initial="hidden"
-                                animate="show"
-                                variants={{
-                                    hidden: { opacity: 0 },
-                                    show: {
-                                        opacity: 1,
-                                        transition: { staggerChildren: 0.04, delayChildren: 0.2 }
-                                    }
-                                }}
-                                className="font-semibold text-xl sm:text-2xl md:text-3xl tracking-wider text-white/95 text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-                            >
-                                {Array.from(currentSlide.title).map((char, index) => (
-                                    <motion.span
-                                        key={index}
-                                        variants={{
-                                            hidden: { opacity: 0, y: 15, filter: 'blur(8px)' },
-                                            show: { 
-                                                opacity: 1, 
-                                                y: 0, 
-                                                filter: 'blur(0px)',
-                                                transition: { duration: 0.6, ease: [0.2, 0.65, 0.3, 0.9] } 
-                                            }
-                                        }}
-                                        className="inline-block"
-                                    >
-                                        {char === ' ' ? '\u00A0' : char}
-                                    </motion.span>
-                                ))}
-                            </motion.div>
-                        )}
-                        {currentSlide?.subtitle && (
-                            <motion.div 
-                                initial="hidden"
-                                animate="show"
-                                variants={{
-                                    hidden: { opacity: 0 },
-                                    show: {
-                                        opacity: 1,
-                                        transition: { staggerChildren: 0.03, delayChildren: 0.8 }
-                                    }
-                                }}
-                                className="font-medium text-base sm:text-lg md:text-xl tracking-wide text-white text-center drop-shadow-md"
-                            >
-                                {Array.from(currentSlide.subtitle).map((char, index) => (
-                                    <motion.span
-                                        key={index}
-                                        variants={{
-                                            hidden: { opacity: 0, y: 15, filter: 'blur(8px)' },
-                                            show: { 
-                                                opacity: 1, 
-                                                y: 0, 
-                                                filter: 'blur(0px)',
-                                                transition: { duration: 0.5, ease: [0.2, 0.65, 0.3, 0.9] } 
-                                            }
-                                        }}
-                                        className="inline-block"
-                                    >
-                                        {char === ' ' ? '\u00A0' : char}
-                                    </motion.span>
-                                ))}
-                            </motion.div>
-                        )}
-                    </div>
+                    {/* Title overlay positioned at bottom */}
+                    {currentSlide?.title && (
+                        <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-4 sm:pb-6 md:pb-8">
+                            <h3 className="font-semibold text-lg sm:text-2xl md:text-3xl text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] max-w-4xl px-4">
+                                {currentSlide.title}
+                            </h3>
+                            {currentSlide?.subtitle && (
+                                <p className="font-medium text-sm sm:text-base md:text-lg text-white/90 text-center drop-shadow-md mt-1">
+                                    {currentSlide.subtitle}
+                                </p>
+                            )}
+                        </div>
+                    )}
                 </motion.div>
             </AnimatePresence>
 
             {/* Slide Indicators */}
             {displayImages.length > 1 && (
-                <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">
+                <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm">
                     {displayImages.map((_, idx) => (
                         <button
                             key={idx}
