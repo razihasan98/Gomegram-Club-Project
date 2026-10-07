@@ -82,7 +82,7 @@ export const HeroSlider: React.FC = () => {
     const currentSlide = displayImages[currentIndex] || displayImages[0];
 
     return (
-        <div className="relative w-full overflow-hidden bg-slate-950 h-[340px] sm:h-[460px] md:h-[560px] lg:h-[640px]">
+        <div className="relative w-full overflow-hidden bg-slate-950 h-[300px] sm:h-[400px] md:h-[480px] lg:h-[560px]">
             <AnimatePresence initial={false}>
                 <motion.div
                     key={currentIndex}
@@ -92,22 +92,11 @@ export const HeroSlider: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.7, ease: "easeInOut" }}
                 >
-                    {/* Ambient Blurred Background - Fills all widescreen edges with rich matching colors */}
-                    <img
-                        src={getImageUrl(currentSlide?.image_path)}
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover blur-3xl scale-125 opacity-60 brightness-75 select-none pointer-events-none"
-                    />
-
-                    {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-black/25 pointer-events-none" />
-
-                    {/* Sharp Main Image - 100% Full View, NEVER cropped on any device (PC, Tab, Mobile) */}
+                    {/* Full-width Edge-to-Edge Image with Top-Aligned Framing (No side gaps & heads/faces fully visible) */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="relative z-10 max-h-full max-w-full w-auto h-auto object-contain mx-auto select-none drop-shadow-[0_12px_40px_rgba(0,0,0,0.75)]"
+                        className="w-full h-full object-cover object-top select-none"
                         fetchPriority="high"
                         loading="eager"
                         onError={(e) => {
@@ -118,8 +107,8 @@ export const HeroSlider: React.FC = () => {
                         }}
                     />
 
-                    {/* Subtle bottom vignette & title gradient */}
-                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-6 sm:pb-8 md:pb-10 gap-1.5 sm:gap-2">
+                    {/* Subtle bottom gradient for title clarity */}
+                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/15 to-transparent flex flex-col items-center justify-end pointer-events-none p-4 pb-6 sm:pb-8 md:pb-10 gap-1.5 sm:gap-2">
                         {currentSlide?.title && (
                             <motion.div 
                                 initial="hidden"
