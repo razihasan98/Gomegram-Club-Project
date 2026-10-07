@@ -69,7 +69,7 @@ export const HomePage: React.FC = () => {
   return (
     <div className="space-y-12 pb-20 md:space-y-20">
       {/* Hero Section */}
-      <section className="relative w-full pt-2">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-2">
         <HeroSlider />
       </section>
 

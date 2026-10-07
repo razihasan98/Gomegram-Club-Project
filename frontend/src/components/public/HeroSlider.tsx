@@ -82,7 +82,7 @@ export const HeroSlider: React.FC = () => {
     const currentSlide = displayImages[currentIndex] || displayImages[0];
 
     return (
-        <div className="relative w-full bg-slate-950 overflow-hidden flex items-center justify-center">
+        <div className="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden bg-slate-900/60 shadow-2xl border border-slate-800/60 flex items-center justify-center">
             <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                     key={currentIndex}
