@@ -92,25 +92,17 @@ export const HeroSlider: React.FC = () => {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.7, ease: "easeInOut" }}
                 >
-                    {/* Full Vibrant Photo Background - Completely fills side gaps with rich real image colors */}
-                    <img
-                        src={getImageUrl(currentSlide?.image_path)}
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover blur-2xl scale-115 opacity-85 brightness-95 select-none pointer-events-none"
-                    />
-
-                    {/* Sharp Main Image - 100% fully visible, no one is cropped */}
+                    {/* Full Edge-to-Edge Hero Image */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="relative z-10 h-full w-auto max-w-full object-contain mx-auto select-none drop-shadow-[0_10px_35px_rgba(0,0,0,0.6)]"
+                        className="w-full h-full object-cover object-center select-none"
                         fetchPriority="high"
                         loading="eager"
                     />
 
                     {/* Subtle vignette & Bottom title gradient */}
-                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-transparent to-black/10 flex flex-col items-center justify-end pointer-events-none p-4 pb-3 sm:pb-6 md:pb-8 gap-1.5 sm:gap-2">
+                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/85 via-black/25 to-black/10 flex flex-col items-center justify-end pointer-events-none p-4 pb-6 sm:pb-8 md:pb-10 gap-1.5 sm:gap-2">
                         {currentSlide?.title && (
                             <motion.div 
                                 initial="hidden"
@@ -178,6 +170,24 @@ export const HeroSlider: React.FC = () => {
                     </div>
                 </motion.div>
             </AnimatePresence>
+
+            {/* Slide Indicators */}
+            {displayImages.length > 1 && (
+                <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 px-3 py-1 rounded-full bg-black/30 backdrop-blur-sm">
+                    {displayImages.map((_, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => setCurrentIndex(idx)}
+                            className={`transition-all duration-300 rounded-full h-2 ${
+                                currentIndex === idx 
+                                    ? 'w-6 bg-indigo-500 shadow-sm' 
+                                    : 'w-2 bg-white/50 hover:bg-white/80'
+                            }`}
+                            aria-label={`Slide ${idx + 1}`}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
