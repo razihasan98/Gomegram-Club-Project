@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Seed Admin Users
-        User::updateOrCreate(
+        // 1. Seed Initial Admin Users (Only if not already created)
+        User::firstOrCreate(
             ['email' => 'admin@swapnosiri.org'],
             [
                 'name' => 'Club Super Admin',
@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        User::updateOrCreate(
+        User::firstOrCreate(
             ['email' => 'emon@gmail.com'],
             [
                 'name' => 'Emon Admin',
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Seed Default Club Settings
+        // 2. Seed Default Club Settings (Only if not already set)
         $settings = [
             'club_name' => 'Gomegram Swapnosiri Tarun Sangha',
             'club_bangla_name' => 'গোমেগ্রাম স্বপ্নসিঁড়ি তরুণ সংঘ',
@@ -63,18 +63,9 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($settings as $k => $v) {
-            ClubSetting::set($k, $v);
+            if (!ClubSetting::where('key', $k)->exists()) {
+                ClubSetting::set($k, $v);
+            }
         }
-
-        // Clean out any dummy data so user can upload fresh real data from admin
-        PaymentTransaction::query()->delete();
-        EventExpense::query()->delete();
-        EventMemberFee::query()->delete();
-        Event::query()->delete();
-        Member::query()->delete();
-        GalleryItem::query()->delete();
-        ContactMessage::query()->delete();
-        Journey::query()->delete();
-        Slider::query()->delete();
     }
 }
