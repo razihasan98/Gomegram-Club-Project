@@ -86,17 +86,28 @@ export const HeroSlider: React.FC = () => {
             <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                     key={currentIndex}
-                    className="w-full flex items-center justify-center relative"
+                    className="w-full flex items-center justify-center relative overflow-hidden"
                     initial={{ opacity: isFirstRender.current ? 1 : 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
                 >
-                    {/* Natural Ratio, 100% Uncropped Image from Top, Bottom, Left, and Right on All Devices */}
+                    {/* Ambient Background - Fills left and right side gaps with matching vibrant photo colors */}
+                    <img
+                        src={getImageUrl(currentSlide?.image_path)}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover blur-3xl scale-125 opacity-65 brightness-75 select-none pointer-events-none"
+                    />
+
+                    {/* Dark gradient overlay for smooth visual blending */}
+                    <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+
+                    {/* 100% Full Uncropped Sharp Main Image */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="w-full h-auto max-h-[85vh] min-h-[240px] sm:min-h-[320px] object-contain block select-none mx-auto"
+                        className="relative z-10 w-full h-auto max-h-[85vh] min-h-[240px] sm:min-h-[320px] object-contain block select-none mx-auto drop-shadow-[0_12px_40px_rgba(0,0,0,0.8)]"
                         fetchPriority="high"
                         loading="eager"
                         onError={(e) => {
