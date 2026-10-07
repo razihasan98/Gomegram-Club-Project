@@ -13,6 +13,9 @@ class GoogleDriveController extends Controller
     {
         $clientId = $request->input('client_id');
         $clientSecret = $request->input('client_secret');
+        $redirectUri = $request->input('redirect_uri') ?: ($request->header('referer') ?: 'http://localhost:5173/admin/settings');
+        // Clean query params from redirectUri
+        $redirectUri = strtok($redirectUri, '?');
         
         if (!$clientId || !$clientSecret) {
             return response()->json(['error' => 'Client ID and Secret are required'], 400);
@@ -21,7 +24,7 @@ class GoogleDriveController extends Controller
         $client = new GoogleClient();
         $client->setClientId($clientId);
         $client->setClientSecret($clientSecret);
-        $client->setRedirectUri('http://localhost:5173/admin/settings');
+        $client->setRedirectUri($redirectUri);
         $client->addScope('https://www.googleapis.com/auth/drive');
         $client->setAccessType('offline');
         $client->setPrompt('consent');
@@ -32,6 +35,9 @@ class GoogleDriveController extends Controller
     public function saveCode(Request $request)
     {
         $code = $request->input('code');
+        $redirectUri = $request->input('redirect_uri') ?: ($request->header('referer') ?: 'http://localhost:5173/admin/settings');
+        $redirectUri = strtok($redirectUri, '?');
+
         if (!$code) {
             return response()->json(['error' => 'No code provided'], 400);
         }
@@ -46,7 +52,7 @@ class GoogleDriveController extends Controller
         $client = new GoogleClient();
         $client->setClientId($clientId);
         $client->setClientSecret($clientSecret);
-        $client->setRedirectUri('http://localhost:5173/admin/settings');
+        $client->setRedirectUri($redirectUri);
 
         try {
             $token = $client->fetchAccessTokenWithAuthCode($code);

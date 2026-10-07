@@ -101,7 +101,8 @@ export const AdminSettings: React.FC = () => {
     if (code) {
       const saveCode = async () => {
         try {
-          const res = await api.post('/admin/settings/gdrive/save-code', { code });
+          const redirect_uri = window.location.origin + '/admin/settings';
+          const res = await api.post('/admin/settings/gdrive/save-code', { code, redirect_uri });
           success(res.data?.message || 'Google Drive connected successfully!');
         } catch (err: any) {
           error(err.response?.data?.error || 'Failed to connect Google Drive');
@@ -180,10 +181,12 @@ export const AdminSettings: React.FC = () => {
     }
     setConnectingGdrive(true);
     try {
+      const redirect_uri = window.location.origin + '/admin/settings';
       const res = await api.get('/admin/settings/gdrive/auth-url', {
         params: {
           client_id: gdriveForm.client_id,
-          client_secret: gdriveForm.client_secret
+          client_secret: gdriveForm.client_secret,
+          redirect_uri: redirect_uri
         }
       });
       if (res.data?.url) {
