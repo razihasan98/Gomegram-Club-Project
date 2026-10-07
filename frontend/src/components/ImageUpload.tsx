@@ -175,7 +175,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [imageLoadFailed, setImageLoadFailed] = useState<boolean>(false);
-  const [backupToDrive, setBackupToDrive] = useState<boolean>(false);
+  const [backupToDrive, setBackupToDrive] = useState<boolean>(true);
 
   const handleFile = async (rawFile: File) => {
     if (!rawFile) return;

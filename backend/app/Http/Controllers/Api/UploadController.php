@@ -52,6 +52,8 @@ class UploadController extends Controller
             }
             $filename = time() . '_' . Str::random(10) . '.' . $extension;
 
+            $url = null;
+
             // 1. Check Cloudinary Integration (Primary Cloud Storage)
             $cloudName = env('CLOUDINARY_CLOUD_NAME') ?: ClubSetting::get('cloudinary_cloud_name');
             $apiKey = env('CLOUDINARY_API_KEY') ?: ClubSetting::get('cloudinary_api_key');
@@ -87,14 +89,7 @@ class UploadController extends Controller
                     if ($response->successful()) {
                         $cData = $response->json();
                         if (!empty($cData['secure_url'])) {
-                            return response()->json([
-                                'success' => true,
-                                'message' => 'Image uploaded to Cloudinary successfully',
-                                'url' => $cData['secure_url'],
-                                'filename' => $filename,
-                                'size' => $file->getSize(),
-                                'original_name' => $file->getClientOriginalName(),
-                            ], 200);
+                            $url = $cData['secure_url'];
                         }
                     } else {
                         Log::warning('Cloudinary upload returned non-200: ' . $response->body());
@@ -104,35 +99,37 @@ class UploadController extends Controller
                 }
             }
 
-            // 2. Local Storage Fallback
-            $path = $file->storeAs($folder, $filename, 'public');
+            // 2. Local Storage Fallback if Cloudinary not used or failed
+            if (!$url) {
+                $path = $file->storeAs($folder, $filename, 'public');
 
-            // Copy directly to public/storage/{folder} if needed for Windows dev server
-            $publicDir = public_path("storage/{$folder}");
-            if (!file_exists($publicDir)) {
-                @mkdir($publicDir, 0755, true);
+                // Copy directly to public/storage/{folder} if needed for Windows dev server
+                $publicDir = public_path("storage/{$folder}");
+                if (!file_exists($publicDir)) {
+                    @mkdir($publicDir, 0755, true);
+                }
+                @copy(storage_path("app/public/{$folder}/{$filename}"), public_path("storage/{$folder}/{$filename}"));
+
+                $url = "/storage/{$folder}/{$filename}";
             }
-            @copy(storage_path("app/public/{$folder}/{$filename}"), public_path("storage/{$folder}/{$filename}"));
 
-            // Relative storage URL
-            $url = "/storage/{$folder}/{$filename}";
+            // 3. Google Drive Backup (if requested or if Google Drive is connected in settings)
+            $shouldBackup = filter_var($request->input('backup_to_drive', true), FILTER_VALIDATE_BOOLEAN);
+            $hasDriveConfig = \App\Models\Setting::where('key', 'gdrive_refresh_token')->exists();
 
-            // 3. Optional Google Drive Backup
-            $shouldBackup = filter_var($request->input('backup_to_drive', false), FILTER_VALIDATE_BOOLEAN);
-            if ($shouldBackup) {
+            if ($shouldBackup || $hasDriveConfig) {
                 try {
                     $googlePath = "{$folder}/{$filename}";
-                    $localSavedPath = storage_path("app/public/{$folder}/{$filename}");
-                    
-                    if (file_exists($localSavedPath)) {
-                        $fileStream = fopen($localSavedPath, 'r');
-                        Storage::disk('google')->put($googlePath, $fileStream);
-                        if (is_resource($fileStream)) {
-                            fclose($fileStream);
+                    $stream = fopen($file->getRealPath(), 'r');
+                    if ($stream) {
+                        Storage::disk('google')->put($googlePath, $stream);
+                        if (is_resource($stream)) {
+                            fclose($stream);
                         }
+                        Log::info("Image backed up to Google Drive: {$googlePath}");
                     }
                 } catch (\Exception $driveEx) {
-                    // Ignore drive backup errors gracefully
+                    Log::error('Google Drive backup error: ' . $driveEx->getMessage());
                 }
             }
 

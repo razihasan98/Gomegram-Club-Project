@@ -40,15 +40,9 @@ class AppServiceProvider extends ServiceProvider
                 
                 // Get folder ID dynamically from Settings
                 $folderId = \App\Models\Setting::where('key', 'gdrive_folder_id')->value('value');
-                if (!$folderId) {
-                    $folderId = '/';
-                }
-
-                $options = [];
-                if ($folderId !== '/') {
-                    $options['sharedFolderId'] = $folderId;
-                }
-                $adapter = new \Masbug\Flysystem\GoogleDriveAdapter($service, null, $options);
+                $rootFolder = (!empty($folderId) && $folderId !== '/') ? $folderId : '/';
+                
+                $adapter = new \Masbug\Flysystem\GoogleDriveAdapter($service, $rootFolder);
                 $driver = new \League\Flysystem\Filesystem($adapter);
 
                 return new \Illuminate\Filesystem\FilesystemAdapter($driver, $adapter, $config);
