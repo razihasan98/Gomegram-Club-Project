@@ -82,29 +82,21 @@ export const HeroSlider: React.FC = () => {
     const currentSlide = displayImages[currentIndex] || displayImages[0];
 
     return (
-        <div className="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-slate-800/40 flex items-center justify-center">
+        <div className="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border border-slate-800/40 flex items-center justify-center h-[340px] sm:h-[440px] md:h-[500px] lg:h-[540px] bg-slate-950">
             <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                     key={currentIndex}
-                    className="w-full flex items-center justify-center relative overflow-hidden"
+                    className="absolute inset-0 w-full h-full overflow-hidden"
                     initial={{ opacity: isFirstRender.current ? 1 : 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
                 >
-                    {/* Full Bright Photo Background - Completely fills left & right sides with real image colors (No Black Bars) */}
-                    <img
-                        src={getImageUrl(currentSlide?.image_path)}
-                        alt=""
-                        aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover blur-2xl scale-115 opacity-90 brightness-95 select-none pointer-events-none"
-                    />
-
-                    {/* 100% Full Uncropped Sharp Main Image */}
+                    {/* Full Container Photo Display */}
                     <img
                         src={getImageUrl(currentSlide?.image_path)}
                         alt={currentSlide?.title || "Club Activity"}
-                        className="relative z-10 w-full h-auto max-h-[85vh] min-h-[240px] sm:min-h-[320px] object-contain block select-none mx-auto drop-shadow-[0_12px_40px_rgba(0,0,0,0.7)]"
+                        className="w-full h-full object-cover object-center select-none"
                         fetchPriority="high"
                         loading="eager"
                         onError={(e) => {
